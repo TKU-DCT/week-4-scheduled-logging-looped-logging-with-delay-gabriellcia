@@ -7,10 +7,9 @@ import time
 def get_system_info():
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    # TODO: Get CPU, memory, and disk usage using psutil
-    cpu = 
-    memory = 
-    disk = 
+    cpu = psutil.cpu_percent(interval=1)
+    memory = psutil.virtual_memory().percent
+    disk = psutil.disk_usage("/").percent
     
     return [now, cpu, memory, disk]
 
@@ -23,5 +22,14 @@ def write_log(data):
         writer.writerow(data)
 
 if __name__ == "__main__":
-    # TODO: Repeat the log process 5 times with 10-second intervals
-    pass
+    
+    print("Starting scheduled logging... (5 entries, 10 seconds apart)")
+    for i in range(5):
+        entry = get_system_info()
+        write_log(entry)
+        print(f"[{i+1}/5] Logged:", entry)
+        
+        if i < 4:
+            time.sleep(10)
+    
+    print("Logging complete! Check log.csv for results.")
